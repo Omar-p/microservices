@@ -1,0 +1,33 @@
+server:
+  port: 8080
+  tomcat:
+    threads:
+      max: 50
+      min-spare: 10
+    connection-timeout: 1500
+
+spring:
+  application:
+    name: customer
+  datasource:
+    url: jdbc:postgresql://localhost:5432/customer
+    username: postgres
+    password: password
+  jpa:
+      hibernate:
+        ddl-auto: update
+        naming:
+          physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
+      properties:
+        hibernate:
+          format_sql: true
+          show_sql: true
+
+
+logging:
+  level:
+    org:
+      hibernate:
+        orm:
+        jdbc:
+          bind: TRACE
