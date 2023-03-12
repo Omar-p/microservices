@@ -1,5 +1,5 @@
 server:
-  port: 8080
+  port: 8081
   tomcat:
     threads:
       max: 50
@@ -8,20 +8,19 @@ server:
 
 spring:
   application:
-    name: customer
+    name: fraud
   datasource:
-    url: jdbc:postgresql://localhost:5432/customer
+    url: jdbc:postgresql://localhost:5432/fraud
     username: postgres
     password: password
   jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
       hibernate:
-        ddl-auto: update
-        naming:
-          physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
-      properties:
-        hibernate:
-          format_sql: true
-          show_sql: true
+        format_sql: true
+        show_sql: true
+
 management:
   endpoints.web.exposure.include: '*'
   tracing:
@@ -30,6 +29,7 @@ management:
     propagation:
       type: b3
   zipkin.tracing.endpoint: http://localhost:9411/api/v2/spans
+
 
 logging:
   pattern:
@@ -44,6 +44,7 @@ logging:
         orm:
         jdbc:
           bind: TRACE
+
 eureka:
   client:
     service-url:

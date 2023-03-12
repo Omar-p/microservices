@@ -1,5 +1,5 @@
 server:
-  port: 8080
+  port: 8090
   tomcat:
     threads:
       max: 50
@@ -7,21 +7,22 @@ server:
     connection-timeout: 1500
 
 spring:
+  zipkin:
+    base-url: http://localhost:9411
   application:
-    name: customer
+    name: notification
   datasource:
-    url: jdbc:postgresql://localhost:5432/customer
+    url: jdbc:postgresql://localhost:5432/notification
     username: postgres
     password: password
   jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
       hibernate:
-        ddl-auto: update
-        naming:
-          physical-strategy: org.hibernate.boot.model.naming.PhysicalNamingStrategyStandardImpl
-      properties:
-        hibernate:
-          format_sql: true
-          show_sql: true
+        format_sql: true
+        show_sql: true
+
 management:
   endpoints.web.exposure.include: '*'
   tracing:
@@ -30,7 +31,6 @@ management:
     propagation:
       type: b3
   zipkin.tracing.endpoint: http://localhost:9411/api/v2/spans
-
 logging:
   pattern:
     level: "%5p [${spring.application.name:},%X{traceId:-},%X{spanId:-}]"
@@ -44,6 +44,7 @@ logging:
         orm:
         jdbc:
           bind: TRACE
+
 eureka:
   client:
     service-url:

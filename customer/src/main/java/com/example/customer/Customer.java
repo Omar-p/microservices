@@ -11,13 +11,13 @@ import lombok.*;
 public class Customer {
   @Id
   @SequenceGenerator(
-      name = "customer_id_seq",
-      sequenceName = "customer_id_seq",
+      name = "customer_id_sequence",
+      sequenceName = "customer_id_sequence",
       allocationSize = 1
   )
   @GeneratedValue(
       strategy = GenerationType.SEQUENCE,
-      generator = "customer_id_seq"
+      generator = "customer_id_sequence"
   )
   private Integer id;
   private String firstName;
