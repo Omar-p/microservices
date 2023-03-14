@@ -9,6 +9,7 @@
 	</parent>
 	<groupId>com.example</groupId>
 	<artifactId>eureka-server</artifactId>
+	<packaging>jar</packaging>
 	<version>0.0.1-SNAPSHOT</version>
 	<name>eureka-server</name>
 	<description>eureka-server</description>
@@ -22,4 +23,13 @@
 		<artifactId>spring-cloud-starter-netflix-eureka-server</artifactId>
 	</dependency>
 	</dependencies>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
+			</plugin>
+		</plugins>
+	</build>
 </project>

@@ -9,6 +9,7 @@
   </parent>
   <groupId>com.example</groupId>
   <artifactId>fraud</artifactId>
+  <packaging>jar</packaging>
   <version>0.0.1-SNAPSHOT</version>
   <name>fraud</name>
   <description>fraud</description>
@@ -62,5 +63,12 @@
 
   </dependencies>
 
-
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-maven-plugin</artifactId>
+      </plugin>
+    </plugins>
+  </build>
 </project>
