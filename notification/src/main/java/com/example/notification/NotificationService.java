@@ -13,7 +13,7 @@ public class NotificationService {
   private final NotificationRepository notificationRepository;
 
 
-  void send(NotificationRequest notificationRequest) {
+  public void send(NotificationRequest notificationRequest) {
     notificationRepository.save(Notification.builder()
         .message(notificationRequest.message())
         .sentAt(LocalDateTime.now())
