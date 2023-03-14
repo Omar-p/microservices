@@ -1,0 +1,47 @@
+server:
+  port: 8888
+  tomcat:
+    threads:
+      max: 50
+      min-spare: 10
+    connection-timeout: 1500
+
+spring:
+  cloud:
+    gateway:
+      routes:
+        - id: customer
+          uri: lb://CUSTOMER
+          predicates:
+            - Path=/api/v1/customers/**
+
+  zipkin:
+    base-url: http://localhost:9411
+  application:
+    name: api-gateway
+management:
+  endpoints.web.exposure.include: '*'
+  tracing:
+    enabled: true
+    sampling.probability: 1.0
+    propagation:
+      type: b3
+  zipkin.tracing.endpoint: http://localhost:9411/api/v2/spans
+logging:
+  pattern:
+    level: "%5p [${spring.application.name:},%X{traceId:-},%X{spanId:-}]"
+  level:
+    reactor:
+      netty: INFO
+    org:
+      springframework:
+        cloud:
+          gateway: TRACE
+
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8761/eureka
+    fetch-registry: true
+    register-with-eureka: true
