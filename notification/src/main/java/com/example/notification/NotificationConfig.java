@@ -10,7 +10,7 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class NotificationConfig {
-  @Value("${rabbitmq.exchanges.internal")
+  @Value("${rabbitmq.exchanges.internal}")
   private String internalExchange;
 
   @Value("${rabbitmq.queues.notification}")
