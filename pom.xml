@@ -15,6 +15,7 @@
     <spring.boot.dependencies.version>3.0.4</spring.boot.dependencies.version>
     <spring-cloud.version>2022.0.1</spring-cloud.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    <image>ghcr.io/omar-p/${project.artifactId}:${project.version}</image>
   </properties>
 
   <modules>
@@ -95,6 +96,27 @@
                 <artifactId>lombok</artifactId>
               </exclude>
             </excludes>
+          </configuration>
+        </plugin>
+        <plugin>
+            <groupId>com.google.cloud.tools</groupId>
+            <artifactId>jib-maven-plugin</artifactId>
+            <version>3.1.4</version>
+          <configuration>
+            <from>
+              <image>eclipse-temurin:17.0.6_10-jdk-focal@sha256:c9f82f747ab63080ca88e5c863525669411454dcb3dae371b9ae9ca11fb80746</image>
+              <platforms>
+                <platform>
+                  <architecture>amd64</architecture>
+                  <os>linux</os>
+                </platform>
+              </platforms>
+            </from>
+            <to>
+              <tags>
+                <tag>latest</tag>
+              </tags>
+            </to>
           </configuration>
         </plugin>
       </plugins>
