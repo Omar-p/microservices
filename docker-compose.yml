@@ -32,19 +32,105 @@ services:
     container_name: zipkin
     ports:
       - 9411:9411
+    networks:
+      - spring
   rabbitmq:
     image: rabbitmq:3.9.29-management-alpine
     container_name: rabbitmq
     ports:
       - 5672:5672
       - 15672:15672
+    networks:
+      - spring
     restart: unless-stopped
 
+  eureka-server:
+    image: ghcr.io/omar-p/eureka-server:latest
+    container_name: eureka-server
+    ports:
+      - 8761:8761
+    networks:
+      - spring
+    depends_on:
+      - zipkin
+  customer:
+    image: ghcr.io/omar-p/customer:latest
+    container_name: customer
+    ports:
+      - 8080:8080
+    networks:
+      - spring
+      - postgres
+    depends_on:
+      - eureka-server
+      - zipkin
+      - rabbitmq
+      - notification
+      - postgres
+    environment:
+      - EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE=http://eureka-server:8761/eureka
+      - SPRING_RABBITMQ_ADDRESSES=rabbitmq:5672
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/customer
+      - SPRING_ZIPKIN_BASE_URL=http://zipkin:9411
+      - MANAGEMENT_ZIPKIN_TRACING_ENDPOINT=http://zipkin:9411/api/v2/spans
+  fraud:
+    image: ghcr.io/omar-p/fraud:latest
+    container_name: fraud
+    ports:
+      - 8081:8081
+    networks:
+      - spring
+      - postgres
+    depends_on:
+      - eureka-server
+      - zipkin
+      - postgres
+    environment:
+      - EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE=http://eureka-server:8761/eureka
+      - SPRING_RABBITMQ_ADDRESSES=rabbitmq:5672
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/fraud
+      - SPRING_ZIPKIN_BASE_URL=http://zipkin:9411
+      - MANAGEMENT_ZIPKIN_TRACING_ENDPOINT=http://zipkin:9411/api/v2/spans
+  apigw:
+    image: ghcr.io/omar-p/apigw:latest
+    container_name: apigw
+    ports:
+      - 8888:8888
+    networks:
+      - spring
+    depends_on:
+      - eureka-server
+      - zipkin
+    environment:
+      - EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE=http://eureka-server:8761/eureka
+      - SPRING_ZIPKIN_BASE_URL=http://zipkin:9411
+      - MANAGEMENT_ZIPKIN_TRACING_ENDPOINT=http://zipkin:9411/api/v2/spans
+  notification:
+    image: ghcr.io/omar-p/notification:latest
+    container_name: notification
+    ports:
+      - 8082:8082
+    networks:
+      - spring
+      - postgres
+    depends_on:
+      - eureka-server
+      - zipkin
+      - rabbitmq
+      - postgres
+    environment:
+      - EUREKA_CLIENT_SERVICE_URL_DEFAULTZONE=http://eureka-server:8761/eureka
+      - SPRING_ZIPKIN_BASE_URL=http://zipkin:9411
+      - MANAGEMENT_ZIPKIN_TRACING_ENDPOINT=http://zipkin:9411/api/v2/spans
+      - SPRING_RABBITMQ_ADDRESSES=rabbitmq:5672
+      - SPRING_DATASOURCE_URL=jdbc:postgresql://postgres:5432/notification
 
 
 
 networks:
   postgres:
+    driver: bridge
+  spring:
     driver: bridge
 
 volumes:
